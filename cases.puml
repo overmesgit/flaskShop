@@ -1,0 +1,68 @@
+@startuml
+skinparam actorStyle awesome
+skinparam minClassWidth 100
+left to right direction
+
+:Buyer:
+usecase DetailedPage as "
+  Detailed Page
+  ==
+  Add to cart
+  Rate product
+"
+usecase ProductList as "
+  Product list/Main page
+  ==
+  Search
+  Choose Categories
+"
+
+usecase Search as "
+  Search
+  ==
+  Search results
+"
+
+usecase Checkout as "
+  Cart/Checkout
+  ==
+  Shipping
+  Payment
+  Summary
+"
+
+Buyer --> (OrderHistory)
+Buyer --> (Profile)
+
+Buyer --> ProductList
+Buyer --> DetailedPage
+Buyer --> Checkout
+ProductList --> Search
+ProductList --> DetailedPage
+Search --> DetailedPage
+
+:Seller:
+usecase Product as "
+  Products
+  ==
+  Product List
+  Add product
+  Edit product
+"
+Seller --> Product
+
+Seller --> (SeeStatistic)
+Seller --> (SupportChat)
+
+usecase Order as "
+  Orders
+  ==
+  View order
+  Mark as delivered
+"
+Seller --> Order
+
+:Admin:
+Admin --> (UsersPage)
+
+@enduml

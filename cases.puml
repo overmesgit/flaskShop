@@ -9,6 +9,7 @@ usecase DetailedPage as "
   ==
   Add to cart
   Rate product
+  Write review
 "
 usecase ProductList as "
   Product list/Main page

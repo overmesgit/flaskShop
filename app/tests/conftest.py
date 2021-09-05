@@ -1,18 +1,22 @@
 import os
 import tempfile
 
+import mongomock
 import pytest
+from mongoengine import connect
 
 from app import create_app
 
 
+@mongomock.patch()
 @pytest.fixture
 def app():
+    # connect('test', host='mongomock://localhost')
     db_fd, db_path = tempfile.mkstemp()
 
     app = create_app({
         'TESTING': True,
-        'DB': db_path,
+        'MONGODB_SETTINGS': {'host': 'mongomock://localhost'},
     })
 
     yield app

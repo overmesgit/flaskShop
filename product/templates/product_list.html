@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block header %}
+    Products <a href="{{ url_for('product.product_add') }}" class="button is-primary">Add</a>
+{% endblock %}
+{% block content %}
+
+
+    {% for product in products_list %}
+        <div class="card">
+            <div class="card-content">
+                <div class="content">
+                    <a href="{{ url_for('product.product_detail', product_id=product.id) }}">{{ product.title }}</a>
+                    <p>{{ product.images }}</p>
+                    <p>{{ product.price }}</p>
+                </div>
+            </div>
+        </div>
+
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% from "field_render.html" import render_field %}
+{% block header %}
+    Add Products
+{% endblock %}
+{% block content %}
+    <form method="POST" action="{{ url_for('product.product_add') }}">
+        {{ form.hidden_tag() }}
+        {{ render_field(form.title) }}
+        {{ render_field(form.image) }}
+        {{ render_field(form.description) }}
+        {{ render_field(form.price) }}
+        {{ render_field(form.category) }}
+        <input class="button is-primary" type="submit" value="Add">
+    </form>
+{% endblock %}

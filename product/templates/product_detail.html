@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% from "field_render.html" import render_field %}
+{% block header %}
+    Products
+{% endblock %}
+{% block content %}
+    <p>{{ product.title }}</p>
+    <p>{{ product.image }}</p>
+    <p>{{ product.description }}</p>
+    <p>{{ product.price }}</p>
+    <p>{{ product.category }}</p>
+{% endblock %}

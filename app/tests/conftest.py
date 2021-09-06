@@ -1,9 +1,10 @@
 import os
 import tempfile
+from contextlib import contextmanager
 
 import mongomock
 import pytest
-from mongoengine import connect
+from flask import template_rendered
 
 from app import create_app
 
@@ -11,7 +12,6 @@ from app import create_app
 @mongomock.patch()
 @pytest.fixture
 def app():
-    # connect('test', host='mongomock://localhost')
     db_fd, db_path = tempfile.mkstemp()
 
     app = create_app({
@@ -33,3 +33,17 @@ def client(app):
 @pytest.fixture
 def runner(app):
     return app.test_cli_runner()
+
+
+@contextmanager
+def captured_templates(app):
+    recorded = []
+
+    def record(sender, template, context, **extra):
+        recorded.append((template, context))
+
+    template_rendered.connect(record, app)
+    try:
+        yield recorded
+    finally:
+        template_rendered.disconnect(record, app)

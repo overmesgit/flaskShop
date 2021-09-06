@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello MyShop!</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='bulma.css') }}">
+</head>
+<body>
+<section class="hero is-link">
+    <div class="hero-body">
+        <p class="title">
+            Multi shop
+        </p>
+        <p class="subtitle">
+            You can buy anything
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="box">
+        <h1 class="title">
+            {% block header %}
+            {% endblock %}
+        </h1>
+        {% block content %}
+        {% endblock %}
+    </div>
+</section>
+</body>
+</html>

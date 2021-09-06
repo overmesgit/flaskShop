@@ -9,9 +9,19 @@
         <div class="card">
             <div class="card-content">
                 <div class="content">
-                    <a href="{{ url_for('product.product_detail', product_id=product.id) }}">{{ product.title }}</a>
-                    <p>{{ product.images }}</p>
-                    <p>{{ product.price }}</p>
+                    <div class="columns">
+                        <div class="column is-narrow">
+                            <figure class="image is-128x128">
+                                <img src="{{ url_for('download_file', filename=product.image) }}"
+                                     class="is-rounded"
+                                     alt="Image">
+                            </figure>
+                        </div>
+                        <div class="column">
+                            <a href="{{ url_for('product.product_detail', product_id=product.id) }}">{{ product.title }}</a>
+                            <p>{{ product.price }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -16,8 +16,12 @@ from product.views import bp
 
 
 class ProductForm(model_form(Product)):  # type: ignore
-    image = FileField(validators=[
-        FileRequired(), FileAllowed(['jpg', 'png'], 'Images only!')])
+    image = FileField(validators=[FileAllowed(['jpg', 'png'], 'Images only!')])
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        if not kwargs.get('instance'):
+            self.image.kwargs.append(FileRequired())
 
     def get_action(self) -> str:
         return url_for('product.product_add_update', product_id=self.instance.pk)
@@ -26,18 +30,23 @@ class ProductForm(model_form(Product)):  # type: ignore
         old_image = self.instance.image
 
         product: Product = super().save(commit=False, **kwargs)
-        product.image = ''
-        product.save()
         f = self.image.data
-        filename = f'{product.id}_{secure_filename(f.filename)}'
-        f.save(Path(current_app.config['UPLOAD_FOLDER']) / filename)
+        if f:
+            if not product.pk:
+                product.image = ''
+                product.save()
 
-        product.image = filename
-        product.save()
+            filename = f'{product.id}_{secure_filename(f.filename)}'
+            f.save(Path(current_app.config['UPLOAD_FOLDER']) / filename)
 
-        if old_image and old_image != filename:
-            os.remove(Path(current_app.config['UPLOAD_FOLDER']) / old_image)
+            product.image = filename
+            product.save()
 
+            if old_image and old_image != filename:
+                os.remove(Path(current_app.config['UPLOAD_FOLDER']) / old_image)
+        else:
+            product.image = old_image
+            product.save()
         return product
 
 

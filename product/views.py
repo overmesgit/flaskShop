@@ -1,7 +1,7 @@
 from typing import Union
 
 import bson
-from flask import Blueprint, render_template, redirect, url_for
+from flask import render_template, redirect, url_for, Blueprint
 from werkzeug import Response
 
 from app.view import redirect_to_404_if_not_found

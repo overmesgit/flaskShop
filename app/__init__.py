@@ -5,8 +5,9 @@ from typing import Any
 from flask import Flask, send_from_directory, render_template, Response
 from flask_mongoengine import MongoEngine
 
+import product.product_bp
 from app.mongo_id_converter import ObjectIdConverter
-from product import views, create_update_view
+from product import views, create_update_view, product_bp
 
 
 def create_app(test_config: dict[str, Any] = None) -> Flask:
@@ -36,7 +37,6 @@ def create_app(test_config: dict[str, Any] = None) -> Flask:
     def not_found() -> tuple[str, int]:
         return render_template('404.html'), 404
 
-    app.register_blueprint(views.bp)
     app.register_blueprint(create_update_view.bp)
 
     return app

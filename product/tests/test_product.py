@@ -82,7 +82,8 @@ def test_products_crud(app, client):
     assert objects.count() == 0
 
 
-def test_products_update(app, client):
+@pytest.fixture
+def product(client) -> Product:
     Product.objects().delete()
     response = client.get('/products/add')
     assert response.status_code == HTTPStatus.OK
@@ -100,7 +101,10 @@ def test_products_update(app, client):
     objects = Product.objects()
     assert objects.count() == 1
     product: Product = objects[0]
+    return product
 
+
+def test_products_update(app, client, product):
     # EDIT FORM
     with captured_templates(app) as templates:
         response = client.get(f'/products/{product.pk}/edit')
@@ -114,6 +118,7 @@ def test_products_update(app, client):
         form = lxml_resp.cssselect('form')[0]
         assert f'/products/{product.pk}/edit' == form.action
 
+    csrf_token = lxml_resp.cssselect('#csrf_token')[0].value
     # EDIT SAVE
     new_im = Image.new("RGB", (2, 2), "#FF0000")
     new_product_data = dict(
@@ -137,3 +142,39 @@ def test_products_update(app, client):
     assert updated_product.image == f'{updated_product.id}_{new_product_data["image"][1]}'
     expected_path = Path(app.config['UPLOAD_FOLDER']) / updated_product.image
     assert open(expected_path, 'rb').read() == new_im.tobytes()
+
+
+def test_products_update_without_file_change(app, client, product):
+    # EDIT FORM
+    with captured_templates(app) as templates:
+        response = client.get(f'/products/{product.pk}/edit')
+
+        assert response.status_code == HTTPStatus.OK
+        assert len(templates)
+        template, context = templates[0]
+        assert template.name == 'product_add_update.html'
+        assert context['form']
+        lxml_resp = fromstring(response.data)
+        form = lxml_resp.cssselect('form')[0]
+        assert f'/products/{product.pk}/edit' == form.action
+
+    csrf_token = lxml_resp.cssselect('#csrf_token')[0].value
+    # EDIT SAVE
+    new_product_data = dict(
+        csrf_token=csrf_token, title='hello1',
+        description='test1', price=11, image='',
+        category='test1')
+    response = client.post(f'/products/{product.pk}/edit', data=new_product_data,
+                           content_type='multipart/form-data')
+    assert response.status_code == HTTPStatus.FOUND
+    objects = Product.objects()
+    assert objects.count() == 1
+    updated_product: Product = objects[0]
+    assert f'/products/{updated_product.pk}' in response.location
+
+    expected_path = Path(app.config['UPLOAD_FOLDER']) / product.image
+    assert os.path.exists(expected_path)
+
+    for k in ['title', 'description', 'price', 'category']:
+        assert getattr(updated_product, k) == new_product_data[k]
+    assert product.image == updated_product.image

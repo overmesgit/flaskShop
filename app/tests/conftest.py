@@ -13,7 +13,6 @@ from app import create_app
 @pytest.fixture
 def app():
     with tempfile.TemporaryDirectory() as tmpdir:
-
         app = create_app({
             'TESTING': True,
             'MONGODB_SETTINGS': {'host': 'mongomock://localhost'},

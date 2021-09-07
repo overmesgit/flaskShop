@@ -2,12 +2,25 @@
 {% from "field_render.html" import render_field %}
 {% block header %}
     Product {{ product.title }}
-    <a class="button is-danger" href="{{ url_for('product.product_delete', product_id=product.id) }}">Delete</a>
+    <a class="button is-primary"
+       href="{{ url_for('product.product_add_update', product_id=product.id) }}">Edit</a>
+    <a class="button is-danger"
+       href="{{ url_for('product.product_delete', product_id=product.id) }}">Delete</a>
 {% endblock %}
 {% block content %}
-    <p>{{ product.title }}</p>
-    <p>{{ product.image }}</p>
-    <p>{{ product.description }}</p>
-    <p>{{ product.price }}</p>
-    <p>{{ product.category }}</p>
+    <div class="columns">
+        <div class="column is-narrow">
+            <figure class="image is-128x128">
+                <img src="{{ url_for('download_file', filename=product.image) }}"
+                     class="is-rounded"
+                     alt="Image">
+            </figure>
+        </div>
+        <div class="column">
+            <p>Description: {{ product.description }}</p>
+            <p>Price: {{ product.price }}</p>
+            <p>Category: {{ product.category }}</p>
+        </div>
+    </div>
+
 {% endblock %}

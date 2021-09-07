@@ -4,7 +4,7 @@
     Add Products
 {% endblock %}
 {% block content %}
-    <form method="POST" action="{{ url_for('product.product_add') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ form.get_action() }}" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         {{ render_field(form.title) }}
         {{ render_field(form.image) }}

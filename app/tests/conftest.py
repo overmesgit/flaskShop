@@ -12,17 +12,15 @@ from app import create_app
 @mongomock.patch()
 @pytest.fixture
 def app():
-    db_fd, db_path = tempfile.mkstemp()
+    with tempfile.TemporaryDirectory() as tmpdir:
 
-    app = create_app({
-        'TESTING': True,
-        'MONGODB_SETTINGS': {'host': 'mongomock://localhost'},
-    })
+        app = create_app({
+            'TESTING': True,
+            'MONGODB_SETTINGS': {'host': 'mongomock://localhost'},
+            'UPLOAD_FOLDER': tmpdir,
+        })
 
-    yield app
-
-    os.close(db_fd)
-    os.unlink(db_path)
+        yield app
 
 
 @pytest.fixture

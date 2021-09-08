@@ -11,10 +11,12 @@
 <section class="hero is-link">
     <div class="hero-body">
         <p class="title">
-            Multi shop
+            <a href="{{ url_for('product.product_list') }}"> Multi shop</a>
         </p>
         <p class="subtitle">
-            You can buy anything, {{ current_user.username }}
+            You can buy anything
+            <br>
+            {{ current_user.user_type }} {{ current_user.username }}
         </p>
     </div>
 </section>

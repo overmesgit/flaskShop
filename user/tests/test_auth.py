@@ -1,10 +1,12 @@
 from http import HTTPStatus
 
+from flask import session, get_flashed_messages
 from flask_login import current_user
 from lxml.html import fromstring
 
 from app.tests.conftest import *
 from user.model import User
+from user.view import UserType
 
 
 def test_register(app, client):
@@ -52,13 +54,46 @@ def test_login(app, client):
         assert f'/login' == form.action
 
     csrf_token = lxml_resp.cssselect('#csrf_token')[0].value
-    # TODO: can't login
 
+    # LOGIN
     with client:
         user = User(username='test_login', email='login@a.com', password='asdf')
         user.save()
+
+        client.post('/login', data={
+            'email': user.email, 'password': '1' + user.password, 'csrf_token': csrf_token,
+            'user_type': UserType.CUSTOMER
+        })
+        assert 'Wrong' in get_flashed_messages()[0]
+        assert current_user.is_anonymous
+
         response = client.post('/login', data={
-            'email': user.email, 'password': user.password, 'csrf_token': csrf_token
+            'email': user.email, 'password': user.password, 'csrf_token': csrf_token,
+            'user_type': UserType.CUSTOMER
         })
         assert response.status_code == HTTPStatus.FOUND
+        assert not current_user.is_anonymous
         assert current_user.username == user.username
+        assert session['user_type'] == UserType.CUSTOMER
+
+    # LOGOUT
+        response = client.get('/logout')
+        assert response.status_code == HTTPStatus.FOUND
+        assert current_user.is_anonymous
+        assert session['user_type'] == None
+
+        response = client.post('/login', data={
+            'email': user.email, 'password': user.password, 'csrf_token': csrf_token,
+            'user_type': UserType.SELLER
+        })
+        assert response.status_code == HTTPStatus.FOUND
+        assert not current_user.is_anonymous
+        assert current_user.username == user.username
+        assert session['user_type'] == UserType.SELLER
+
+    # LOGOUT
+        response = client.get('/logout')
+        assert response.status_code == HTTPStatus.FOUND
+        assert current_user.is_anonymous
+        assert session['user_type'] == None
+

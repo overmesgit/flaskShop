@@ -5,11 +5,15 @@
     User register
 {% endblock %}
 {% block content %}
-    <form method="POST" action="{{ url_for('user.register') }}">
-        {{ form.hidden_tag() }}
-        {{ render_field(form.email) }}
-        {{ render_field(form.username) }}
-        {{ render_field(form.password) }}
-        <input class="button is-primary" type="submit" value="Register">
-    </form>
+    <div class="columns">
+        <div class="column is-one-third">
+            <form method="POST" action="{{ url_for('user.register') }}">
+                {{ form.hidden_tag() }}
+                {{ render_field(form.email) }}
+                {{ render_field(form.username) }}
+                {{ render_field(form.password) }}
+                <input class="button is-primary" type="submit" value="Register">
+            </form>
+        </div>
+    </div>
 {% endblock %}

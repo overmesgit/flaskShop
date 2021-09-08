@@ -5,10 +5,15 @@
     User login
 {% endblock %}
 {% block content %}
-    <form method="POST" action="{{ url_for('user.login') }}">
-        {{ form.hidden_tag() }}
-        {{ render_field(form.email) }}
-        {{ render_field(form.password) }}
-        <input class="button is-primary" type="submit" value="Login">
-    </form>
+    <div class="columns">
+        <div class="column is-one-third">
+            <form method="POST" action="{{ url_for('user.login') }}">
+                {{ form.hidden_tag() }}
+                {{ render_field(form.email) }}
+                {{ render_field(form.password) }}
+                {{ render_field(form.user_type) }}
+                {{ form.login(class="button is-primary") }}
+            </form>
+        </div>
+    </div>
 {% endblock %}

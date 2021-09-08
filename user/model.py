@@ -1,3 +1,4 @@
+from flask import session
 from flask_login import UserMixin
 from flask_mongoengine import Document
 from mongoengine import StringField, ListField, BooleanField
@@ -26,7 +27,7 @@ class User(Document, UserMixin):
 
     @property
     def is_authenticated(self):
-        return False
+        return True
 
     @property
     def is_active(self):
@@ -35,6 +36,10 @@ class User(Document, UserMixin):
     @property
     def is_anonymous(self):
         return False
+
+    @property
+    def user_type(self):
+        return session['user_type']
 
     def get_id(self):
         return self.email

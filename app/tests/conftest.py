@@ -17,6 +17,7 @@ def app():
             'TESTING': True,
             'MONGODB_SETTINGS': {'host': 'mongomock://localhost'},
             'UPLOAD_FOLDER': tmpdir,
+            'DEBUG_TB_ENABLED': False
         })
 
         yield app

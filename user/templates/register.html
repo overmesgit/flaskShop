@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% from "field_render.html" import render_field %}
+
+{% block header %}
+    User register
+{% endblock %}
+{% block content %}
+    <form method="POST" action="{{ url_for('user.register') }}">
+        {{ form.hidden_tag() }}
+        {{ render_field(form.email) }}
+        {{ render_field(form.username) }}
+        {{ render_field(form.password) }}
+        <input class="button is-primary" type="submit" value="Register">
+    </form>
+{% endblock %}

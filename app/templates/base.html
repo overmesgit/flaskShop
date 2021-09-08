@@ -14,7 +14,7 @@
             Multi shop
         </p>
         <p class="subtitle">
-            You can buy anything
+            You can buy anything, {{ current_user.username }}
         </p>
     </div>
 </section>
@@ -25,6 +25,17 @@
             {% block header %}
             {% endblock %}
         </h1>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <article class="message is-info">
+                        <div class="message-body">
+                            {{ message }}
+                        </div>
+                    </article>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         {% block content %}
         {% endblock %}
     </div>

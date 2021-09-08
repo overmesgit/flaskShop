@@ -10,6 +10,8 @@ from flask_wtf.file import FileField, FileRequired, FileAllowed
 from werkzeug import Response
 from werkzeug.datastructures import CombinedMultiDict
 from werkzeug.utils import secure_filename
+from wtforms import DecimalField
+from wtforms.validators import NumberRange
 
 from product.models import Product
 from product.views import bp
@@ -17,6 +19,7 @@ from product.views import bp
 
 class ProductForm(model_form(Product)):  # type: ignore
     image = FileField(validators=[FileAllowed(['jpg', 'png'], 'Images only!')])
+    price = DecimalField(validators=[NumberRange(min=0.01)])
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)

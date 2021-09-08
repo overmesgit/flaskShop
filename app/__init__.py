@@ -5,9 +5,8 @@ from typing import Any
 from flask import Flask, send_from_directory, render_template, Response
 from flask_mongoengine import MongoEngine
 
-import product.product_bp
 from app.mongo_id_converter import ObjectIdConverter
-from product import views, create_update_view, product_bp
+from product import create_update_view
 
 
 def create_app(test_config: dict[str, Any] = None) -> Flask:

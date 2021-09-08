@@ -178,3 +178,27 @@ def test_products_update_without_file_change(app, client, product):
     for k in ['title', 'description', 'price', 'category']:
         assert getattr(updated_product, k) == new_product_data[k]
     assert product.image == updated_product.image
+
+
+# all should fail
+@pytest.mark.parametrize("field,value", [
+    ('title', ''),
+    ('description', ''),
+    ('price', 0),
+    ('image', (io.BytesIO(Image.new("RGB", (1, 1), "#FF0000").tobytes()), 'test1.txt')),
+    ('category', ''),
+])
+def test_products_show_error(app, client, product, field, value):
+    app.config.setdefault('WTF_CSRF_ENABLED', False)
+    # EDIT SAVE
+    new_product_data = dict(
+        title='hello1',
+        description='test1', price=10, image='',
+        category='test1')
+    new_product_data[field] = value
+    response = client.post(f'/products/{product.pk}/edit', data=new_product_data,
+                           content_type='multipart/form-data')
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+    lxml_resp = fromstring(response.data)
+    field = lxml_resp.cssselect(f'label[for="{field}"]')[0].getparent().getparent()
+    assert field.cssselect('.is-danger')
